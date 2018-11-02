@@ -57,18 +57,12 @@ RenderView::RenderView() : nanogui::Screen(Eigen::Vector2i(1024, 768), "Render V
 	{
 		indices.col(idx) << prefab->geo.m_faces.m_vertex_index[idx], prefab->geo.m_faces.m_vertex_index[idx+1], prefab->geo.m_faces.m_vertex_index[idx+2];
 	}
-	//indices.col(0) << 0, 1, 2;
-	//indices.col(1) << 2, 3, 0;
-
+	
 	nanogui::MatrixXf positions(3, prefab->geo.m_pos.size());
 	for (unsigned int idx=0; idx< prefab->geo.m_pos.size(); idx++) 
 	{
 		positions.col(idx) << prefab->geo.m_pos[idx].x, prefab->geo.m_pos[idx].y, prefab->geo.m_pos[idx].z;
 	}
-	//positions.col(0) << -100, -100, 0;
-	//positions.col(1) << 100, -100, 0;
-	//positions.col(2) << 100, 100, 0;
-	//positions.col(3) << -100, 100, 0;
 	
 	m_shader.bind();
 	m_shader.uploadIndices(indices);
@@ -83,16 +77,12 @@ RenderView::~RenderView() {
 
 void RenderView::setScene()
 {
-	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 projection = glm::perspective(70.0f, (float)4 / 3, 0.01f, 12.0f);
-	glm::mat4 glm_mvp = projection * view * model;
+	Eigen::Matrix4f model;
+	model.setIdentity();
 
-	Eigen::Matrix4f mvp;
-	mvp << glm_mvp[0][0], glm_mvp[0][1], glm_mvp[0][2], glm_mvp[0][3],
-		   glm_mvp[1][0], glm_mvp[1][1], glm_mvp[1][2], glm_mvp[1][3],
-		   glm_mvp[2][0], glm_mvp[2][1], glm_mvp[2][2], glm_mvp[2][3],
-		   glm_mvp[3][0], glm_mvp[3][1], glm_mvp[3][2], glm_mvp[3][3];
+	Eigen::Matrix4f view = transferGLMtoEigen(glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	Eigen::Matrix4f projection = transferGLMtoEigen(glm::perspective(45.0f, (float)4 / 3, 0.01f, 12.0f));
+	Eigen::Matrix4f mvp = projection * view * model;
 
 	m_shader.setUniform("modelViewProj", mvp);
 }
@@ -109,4 +99,18 @@ bool RenderView::loadObject(std::string filepath)
 	prefab->mat.m_shader.m_fragment_shader = prefab->loadShaderFile("../resources/shaders/basis.frag");
 	m_prefabs.push_back(prefab);
 	return true;
+}
+
+Eigen::Matrix4f RenderView::transferGLMtoEigen(glm::mat4 intput)
+{
+	Eigen::Matrix4f output;
+	output.setZero();
+	for (unsigned int idx1=0 ; idx1 < 4 ; idx1++) 
+	{
+		for (unsigned int idx2 = 0; idx2 < 4; idx2++)
+		{
+			output(idx1, idx2) = intput[idx2][idx1];
+		}
+	}
+	return output;
 }

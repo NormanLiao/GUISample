@@ -47,6 +47,7 @@ private:
 	void setScene();
 	void setObject();
 	bool loadObject(std::string filepath);
+	Eigen::Matrix4f transferGLMtoEigen(glm::mat4 matrix);
 
 	nanogui::GLShader m_shader;
 	std::vector<Prefab*> m_prefabs;
