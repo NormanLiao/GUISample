@@ -13,7 +13,7 @@ Prefab::~Prefab()
 
 bool Prefab::loadObj(std::string filepath)
 {
-	m_geo.m_mesh = new VBOMesh(filepath.c_str(), false, true, true);
+	m_geo.m_mesh = new VBOMesh(filepath.c_str(), false, true, false);
 	return true;
 }
 
@@ -28,15 +28,15 @@ GLuint Prefab::loadTexture(std::string filepath)
 		return 0;
 	}
 
-	GLuint texID;
-	glGenTextures(1, &texID);
-	glBindTexture(GL_TEXTURE_2D, texID);
+	
+	glGenTextures(1, &m_mat.m_texID);
+	glBindTexture(GL_TEXTURE_2D, m_mat.m_texID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_mat.m_tex.size().width, m_mat.m_tex.size().height, 0, GL_RGB, GL_UNSIGNED_BYTE, m_mat.m_tex.ptr());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	m_mat.m_tex.release();
-	m_prog.setUniform("Tex1", 0);
-	return texID;
+	// m_mat.m_tex.release();
+	m_prog.setUniform("tDiffuse", 0);
+	return m_mat.m_texID;
 }
 
 bool Prefab::compileAndLinkShader(std::string vert_path, std::string frag_path)
@@ -68,7 +68,7 @@ void Prefab::setScene()
 	m_scene.projection = glm::perspective(45.0f, (float)4 / 3, 0.001f, 300.0f);
 
 	
-	m_prog.setUniform("Light.Position", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	m_prog.setUniform("Light.Position", glm::vec4(0.0f, 500.0f, 500.0f, 1.0f));
 	m_prog.setUniform("Light.Intensity", glm::vec3(1.0f, 1.0f, 1.0f));
 	m_prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
 	m_prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);

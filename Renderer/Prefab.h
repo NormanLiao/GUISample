@@ -17,6 +17,7 @@ struct Geometry {
 
 struct Material {
 	cv::Mat m_tex;
+	GLuint m_texID;
 };
 
 struct Scene {

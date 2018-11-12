@@ -140,6 +140,12 @@ xcopy /y /d  "$(SolutionDir)\external\opencv3\bin\opencv_world330.dll" "$(OutDir
     <ClInclude Include="VBOMesh.h" />
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\shaders\disney_brdf.fs" />
+    <None Include="..\resources\shaders\disney_brdf.vs" />
+    <None Include="..\resources\shaders\texture.fs" />
+    <None Include="..\resources\shaders\texture.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -4,6 +4,7 @@
 #include <nanogui/screen.h>
 #include <nanogui/window.h>
 #include <nanogui/layout.h>
+#include <nanogui/nanogui.h>
 #include <iostream>
 #include <string>
 #include <glm.hpp>
@@ -23,7 +24,7 @@ class RenderView : public nanogui::Screen {
 public:
 	RenderView();
 	~RenderView();
-
+	
 	virtual bool keyboardEvent(int key, int scancode, int action, int modifiers) {
 		if (Screen::keyboardEvent(key, scancode, action, modifiers))
 			return true;
@@ -41,15 +42,19 @@ public:
 
 	virtual void drawContents() {
 		/* Draw the window contents using OpenGL */
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 		for (unsigned int idx=0; idx<m_prefabs.size(); idx++)
 		{
+			m_prefabs[idx]->m_prog.use();
+			glBindTexture(GL_TEXTURE_2D, m_prefabs[idx]->m_mat.m_texID);
 			m_prefabs[idx]->m_geo.m_mesh->render();
 		}
+		
 	}
 	
 private:
 	std::vector<Prefab*> m_prefabs;
+	nanogui::GLShader mShader;
 };
 
 

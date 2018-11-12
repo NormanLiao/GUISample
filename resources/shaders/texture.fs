@@ -4,7 +4,7 @@ in vec3 Position;
 in vec3 Normal;
 in vec2 TexCoord;
 
-uniform sampler2D Tex1;
+uniform sampler2D tDiffuse;
 
 struct LightInfo {
   vec4 Position;  // Light position in eye coords.
@@ -38,7 +38,10 @@ void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
 
 void main() {
     vec3 ambAndDiff, spec;
-    vec4 texColor = texture( Tex1, TexCoord );
+    vec4 texColor = texture( tDiffuse, TexCoord );
     phongModel( Position, Normal, ambAndDiff, spec );
-    FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
+	if(texColor.xyz == vec3(0.0, 0.0, 0.0))
+		FragColor = vec4( ambAndDiff, 1.0 ) + vec4(spec,1.0);
+	else
+		FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
 }

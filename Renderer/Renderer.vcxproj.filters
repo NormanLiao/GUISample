@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{6a4adc8d-27ff-4c52-a833-1bc051a7b3b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,5 +47,19 @@
     <ClInclude Include="VBOMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\shaders\disney_brdf.vs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\disney_brdf.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\texture.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\texture.vs">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
