@@ -33,16 +33,14 @@ bool Viewer::initRenderView()
 	return true;
 }
 
-
-
 RenderView::RenderView() : nanogui::Screen(Eigen::Vector2i(1024, 768), "Render Viewer") 
 {	
 	Prefab* prefab = new Prefab();
+	prefab->compileAndLinkShader("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
 	prefab->loadObj("../resources/eos_result.obj");
-	prefab->compileAndLinkShader("../resources/shaders/diffuse.vert", "../resources/shaders/diffuse.frag");
+	prefab->loadTexture("../resources/images/test.jpg");
 	prefab->setScene();
-	m_prefabs.push_back(prefab);
-	
+	m_prefabs.push_back(prefab);	
 }
 
 RenderView::~RenderView() {

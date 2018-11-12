@@ -31,7 +31,7 @@ class Prefab
 		Prefab();
 		~Prefab();
 		bool loadObj(std::string filename);
-		bool loadTexture(std::string filepath);
+		GLuint loadTexture(std::string filepath);
 		bool compileAndLinkShader(std::string vert_path, std::string frag_path);
 		void setScene();
 		GLSLProgram m_prog;

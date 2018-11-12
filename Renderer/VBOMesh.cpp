@@ -54,7 +54,7 @@ void VBOMesh::loadOBJ( const char * fileName ) {
                 // Process texture coordinate
                 float s,t;
                 lineStream >> s >> t;
-                texCoords.push_back(glm::vec2(s,t) );
+                texCoords.push_back(glm::vec2(s,-t) );
             } else if (token == "vn" ) {
                 float x, y, z;
                 lineStream >> x >> y >> z;

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <algorithm>
 
+
 Prefab::Prefab()
 {
 }
@@ -12,22 +13,30 @@ Prefab::~Prefab()
 
 bool Prefab::loadObj(std::string filepath)
 {
-	m_geo.m_mesh = new VBOMesh(filepath.c_str());
+	m_geo.m_mesh = new VBOMesh(filepath.c_str(), false, true, true);
 	return true;
 }
 
 
-bool Prefab::loadTexture(std::string filepath)
+GLuint Prefab::loadTexture(std::string filepath)
 {
+	glActiveTexture(GL_TEXTURE0);
 	m_mat.m_tex = cv::imread(filepath, CV_LOAD_IMAGE_COLOR);
 
 	if (!m_mat.m_tex.data) {
 		std::cout << "Could not open or find the image: " << filepath << std::endl;
-		return false;
+		return 0;
 	}
-	
-	return true;
-	
+
+	GLuint texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_mat.m_tex.size().width, m_mat.m_tex.size().height, 0, GL_RGB, GL_UNSIGNED_BYTE, m_mat.m_tex.ptr());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	m_mat.m_tex.release();
+	m_prog.setUniform("Tex1", 0);
+	return texID;
 }
 
 bool Prefab::compileAndLinkShader(std::string vert_path, std::string frag_path)
@@ -55,12 +64,16 @@ bool Prefab::compileAndLinkShader(std::string vert_path, std::string frag_path)
 void Prefab::setScene()
 {
 	m_scene.model = glm::mat4(1.0f);
-	m_scene.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 200.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	m_scene.projection = glm::perspective(45.0f, (float)4 / 3, 0.01f, 250.0f);
+	m_scene.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 250.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	m_scene.projection = glm::perspective(45.0f, (float)4 / 3, 0.001f, 300.0f);
 
-	m_prog.setUniform("Kd", 0.9f, 0.5f, 0.3f);
-	m_prog.setUniform("Ld", 1.0f, 1.0f, 1.0f);
-	m_prog.setUniform("LightPosition", m_scene.view * glm::vec4(5.0f, 5.0f, 2.0f, 1.0f));
+	
+	m_prog.setUniform("Light.Position", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	m_prog.setUniform("Light.Intensity", glm::vec3(1.0f, 1.0f, 1.0f));
+	m_prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
+	m_prog.setUniform("Material.Ks", 0.95f, 0.95f, 0.95f);
+	m_prog.setUniform("Material.Ka", 0.1f, 0.1f, 0.1f);
+	m_prog.setUniform("Material.Shininess", 100.0f);
 
 	glm::mat4 mv = m_scene.view * m_scene.model;
 	m_prog.setUniform("ModelViewMatrix", mv);
