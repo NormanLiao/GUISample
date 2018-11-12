@@ -9,8 +9,9 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtx/transform2.hpp>
-#include <Eigen/core>
 #include "Prefab.h"
+#include "VBOMesh.h"
+#include "GLSLProgram.h"
 
 using std::string;
 using std::vector;
@@ -40,16 +41,14 @@ public:
 
 	virtual void drawContents() {
 		/* Draw the window contents using OpenGL */
-		m_shader.drawIndexed(GL_TRIANGLES, 0, m_prefabs[0]->geo.m_faces.m_vertex_index.size());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		for (unsigned int idx=0; idx<m_prefabs.size(); idx++)
+		{
+			m_prefabs[idx]->m_geo.m_mesh->render();
+		}
 	}
 	
 private:
-	void setScene();
-	void setObject();
-	bool loadObject(std::string filepath);
-	Eigen::Matrix4f transferGLMtoEigen(glm::mat4 matrix);
-
-	nanogui::GLShader m_shader;
 	std::vector<Prefab*> m_prefabs;
 };
 

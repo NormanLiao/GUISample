@@ -3,36 +3,26 @@
 #include <vector>
 #include <map>
 #include <glm.hpp>
-
-struct Face {
-	std::vector<unsigned short> m_vertex_index;
-	std::vector<glm::uvec3> m_uv_index;
-	std::vector<glm::uvec3> m_normal_index;
-};
+#include <gtc/matrix_transform.hpp>
+#include <gtx/transform2.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv/highgui.h>
+#include "VBOMesh.h"
+#include "GLSLProgram.h"
 
 struct Geometry {
-	std::vector<glm::vec3> m_pos;
-	std::vector<glm::vec2> m_uvs;
-	std::vector<glm::vec3> m_normals;
-	Face m_faces;
+	VBOMesh* m_mesh;
 };
 
-struct Shader {
-	std::string m_vertex_shader;
-	std::string m_fragment_shader;
-};
 
 struct Material {
-	Shader m_shader;
+	cv::Mat m_tex;
 };
 
-struct PackedVertex {
-	glm::vec3 position;
-	glm::vec2 uv;
-	glm::vec3 normal;
-	bool operator<(const PackedVertex that) const {
-		return memcmp((void*)this, (void*)&that, sizeof(PackedVertex))>0;
-	};
+struct Scene {
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 projection;
 };
 
 class Prefab
@@ -41,18 +31,12 @@ class Prefab
 		Prefab();
 		~Prefab();
 		bool loadObj(std::string filename);
-		std::string loadShaderFile(std::string filename);
-		Geometry geo;
-		Material mat;
-
-	
-		bool indexVBO(std::vector<glm::vec3> & in_vertices,
-			std::vector<glm::vec2> & in_uvs,
-			std::vector<glm::vec3> & in_normals,
-			std::vector<unsigned short> & out_indices,
-			std::vector<glm::vec3> & out_vertices,
-			std::vector<glm::vec2> & out_uvs,
-			std::vector<glm::vec3> & out_normals);
-		bool getSimilarVertexIndex(PackedVertex & packed, std::map<PackedVertex, unsigned short> & VertexToOutIndex, unsigned short & result);
+		bool loadTexture(std::string filepath);
+		bool compileAndLinkShader(std::string vert_path, std::string frag_path);
+		void setScene();
+		GLSLProgram m_prog;
+		Geometry m_geo;
+		Material m_mat;
+		Scene m_scene;
 };
 
