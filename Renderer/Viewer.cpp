@@ -16,9 +16,8 @@ bool Viewer::initRenderView()
 	
 	try {
 		nanogui::init();
-
-		/* scoped variables */ {
-			nanogui::ref<RenderView> view = new RenderView();
+		{
+			nanogui::ref<ScreenView> view = new ScreenView();
 			view->drawAll();
 			view->setVisible(true);
 			nanogui::mainloop();
@@ -32,32 +31,51 @@ bool Viewer::initRenderView()
 	return true;
 }
 
-RenderView::RenderView() : nanogui::Screen(Eigen::Vector2i(1024, 768), "Render Viewer") 
+ScreenView::ScreenView() : nanogui::Screen(Eigen::Vector2i(1100, 900), "Render Viewer") 
 {	
-
-
 	nanogui::Window *window = new nanogui::Window(this, "Basic widgets");
-    window->setPosition(nanogui::Vector2i(15, 15));
-    window->setLayout(new nanogui::GroupLayout());
+	window->setPosition(nanogui::Vector2i(0, 0));
+	window->setLayout(new nanogui::GroupLayout());
 
-	nanogui::Widget *tools = new Widget(window);
+	m_render = new RenderView(window);
+	m_render->setSize({ 1024, 768 });
+	
+	setBasicWidget(window);
+	performLayout();
+}
+
+ScreenView::~ScreenView() {
+	
+}
+
+void ScreenView::setBasicWidget(nanogui::Window *window)
+{
+	nanogui::Widget *tools = new nanogui::Widget(window);
 	tools->setLayout(new nanogui::BoxLayout(nanogui::Orientation::Horizontal, nanogui::Alignment::Middle, 0, 6));
 
-	nanogui::Button *b = new nanogui::Button(tools, "Open");
+	nanogui::Button *b = new nanogui::Button(tools, "Load Object");
 	b->setCallback([&] {
-		std::cout << "File dialog result: " << nanogui::file_dialog( { { "jpg", "JPEG" }, { "png", "Portable Network Graphics" },{ "txt", "Text file" } }, false) << std::endl;
+		std::string obj_path = nanogui::file_dialog({ { "obj", "Object Mesh" }}, false);
+		m_render->loadPrefab(obj_path);
 	});
-	performLayout();
-	
-	Prefab* prefab = new Prefab();
-	prefab->compileAndLinkShader("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
-	prefab->loadObj("../resources/eos_result.obj");
-	prefab->loadTexture("../resources/images/test.jpg");
-	prefab->setScene();
-	m_prefabs.push_back(prefab);	
+}
+
+RenderView::RenderView(nanogui::Widget *parent) : nanogui::GLCanvas(parent)
+{
 
 }
 
-RenderView::~RenderView() {
-	
+RenderView::~RenderView()
+{
+}
+
+bool RenderView::loadPrefab(std::string filename)
+{
+	Prefab* prefab = new Prefab();
+	prefab->compileAndLinkShader("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
+	prefab->loadObj(filename);
+	prefab->loadTexture("../resources/images/test.jpg");
+	prefab->setScene();
+	m_prefabs.push_back(prefab);
+	return true;
 }
