@@ -27,14 +27,12 @@ GLuint Prefab::loadTexture(std::string filepath)
 		std::cout << "Could not open or find the image: " << filepath << std::endl;
 		return 0;
 	}
-
-	
 	glGenTextures(1, &m_mat.m_texID);
 	glBindTexture(GL_TEXTURE_2D, m_mat.m_texID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_mat.m_tex.size().width, m_mat.m_tex.size().height, 0, GL_RGB, GL_UNSIGNED_BYTE, m_mat.m_tex.ptr());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// m_mat.m_tex.release();
+	m_mat.m_tex.release();
 	m_prog.setUniform("tDiffuse", 0);
 	return m_mat.m_texID;
 }
@@ -79,4 +77,15 @@ void Prefab::setScene()
 	m_prog.setUniform("ModelViewMatrix", mv);
 	m_prog.setUniform("NormalMatrix", glm::mat3(glm::vec3(mv[0]), glm::vec3(mv[1]), glm::vec3(mv[2])));
 	m_prog.setUniform("MVP", m_scene.projection * mv);
+}
+
+bool Prefab::rotateModel(float angle_x, float angle_y)
+{
+	m_scene.model *= glm::rotate(angle_x, glm::vec3(0.0f, 1.0f, 0.0f));
+	m_scene.model *= glm::rotate(angle_y, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 mv = m_scene.view * m_scene.model;
+	m_prog.setUniform("ModelViewMatrix", mv);
+	m_prog.setUniform("NormalMatrix", glm::mat3(glm::vec3(mv[0]), glm::vec3(mv[1]), glm::vec3(mv[2])));
+	m_prog.setUniform("MVP", m_scene.projection * mv);
+	return false;
 }

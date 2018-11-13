@@ -7,8 +7,9 @@
 #include <gtx/transform2.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
-#include "VBOMesh.h"
 #include "GLSLProgram.h"
+#include "VBOMesh.h"
+
 
 struct Geometry {
 	VBOMesh* m_mesh;
@@ -35,6 +36,7 @@ class Prefab
 		GLuint loadTexture(std::string filepath);
 		bool compileAndLinkShader(std::string vert_path, std::string frag_path);
 		void setScene();
+		bool rotateModel(float angle_x, float angle_y);
 		GLSLProgram m_prog;
 		Geometry m_geo;
 		Material m_mat;

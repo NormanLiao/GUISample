@@ -277,8 +277,8 @@ void VBOMesh::storeVBO( const std::vector<glm::vec3> & points,
                         const std::vector<glm::vec4> &tangents,
                         const std::vector<int> &elements )
 {
-    int nVerts  = points.size();
-    faces = elements.size() / 3;
+    int nVerts  = (int)points.size();
+    faces = (unsigned int ) elements.size() / 3;
 
     float * v = new float[3 * nVerts];
     float * n = new float[3 * nVerts];
