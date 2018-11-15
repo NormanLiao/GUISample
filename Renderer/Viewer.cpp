@@ -42,6 +42,8 @@ ScreenView::ScreenView() : nanogui::Screen(Eigen::Vector2i(1100, 900), "Render V
 	
 	setBasicWidget(window);
 	performLayout();
+
+	m_render->loadDefaultAvatar();
 }
 
 ScreenView::~ScreenView() {
@@ -67,15 +69,45 @@ RenderView::RenderView(nanogui::Widget *parent) : nanogui::GLCanvas(parent)
 
 RenderView::~RenderView()
 {
+
 }
 
 bool RenderView::loadPrefab(std::string filename)
 {
-	Prefab* prefab = new Prefab();
+	PhongPrefab* prefab = new PhongPrefab();
 	prefab->compileAndLinkShader("../resources/shaders/texture.vs", "../resources/shaders/texture.fs");
 	prefab->loadObj(filename);
 	prefab->loadTexture("../resources/images/test.jpg");
 	prefab->setScene();
 	m_prefabs.push_back(prefab);
+	return true;
+}
+
+bool RenderView::loadDefaultAvatar()
+{
+	std::string vert_shader = "../resources/shaders/texture.vs";
+	std::string frag_shader = "../resources/shaders/texture.fs";
+
+	PhongPrefab* prefab_face = new PhongPrefab();
+	prefab_face->compileAndLinkShader(vert_shader, frag_shader);
+	prefab_face->loadObj("../resources/Portrait_Front_1/face.obj");
+	prefab_face->loadTexture("../resources/Portrait_Front_1/face.jpg");
+	prefab_face->setScene();
+	m_prefabs.push_back(prefab_face);
+
+	PhongPrefab* prefab_body = new PhongPrefab();
+	prefab_body->compileAndLinkShader(vert_shader, frag_shader);
+	prefab_body->loadObj("../resources/Portrait_Front_1/avatar/body/body_part.obj");
+	prefab_body->loadTexture("../resources/Portrait_Front_1/body.jpg");
+	prefab_body->setScene();
+	m_prefabs.push_back(prefab_body);
+
+	PhongPrefab* prefab_cloth = new PhongPrefab();
+	prefab_cloth->compileAndLinkShader(vert_shader, frag_shader);
+	prefab_cloth->loadObj("../resources/Portrait_Front_1/cloth/cloth.obj");
+	prefab_cloth->loadTexture("../resources/Portrait_Front_1/cloth/texture.png");
+	prefab_cloth->setScene();
+	m_prefabs.push_back(prefab_cloth);
+
 	return true;
 }

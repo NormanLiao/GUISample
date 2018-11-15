@@ -7,6 +7,14 @@
 #include <glm.hpp>
 #include <string>
 
+struct PackedVertex {
+	glm::vec3 position;
+	glm::vec2 uv;
+	glm::vec3 normal;
+	bool operator<(const PackedVertex that) const {
+		return memcmp((void*)this, (void*)&that, sizeof(PackedVertex))>0;
+	};
+};
 
 class VBOMesh
 {
@@ -38,6 +46,15 @@ public:
     VBOMesh( const char * fileName, bool reCenterMesh = false, bool loadTc = false, bool genTangents = false );
     void render() const;
     void loadOBJ( const char * fileName );
+	bool loadOBJTest(const char * fileName);
+	void indexVBO(std::vector<glm::vec3> & in_vertices,
+				std::vector<glm::vec2> & in_uvs,
+				std::vector<glm::vec3> & in_normals,
+				std::vector<int> & out_indices,
+				std::vector<glm::vec3> & out_vertices,
+				std::vector<glm::vec2> & out_uvs,
+				std::vector<glm::vec3> & out_normals);
+	bool getSimilarVertexIndex_fast(PackedVertex & packed, std::map<PackedVertex, int> & VertexToOutIndex, int & result);
 };
 
 #endif // VBOMESH_H

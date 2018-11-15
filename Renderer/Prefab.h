@@ -35,11 +35,20 @@ class Prefab
 		bool loadObj(std::string filename);
 		GLuint loadTexture(std::string filepath);
 		bool compileAndLinkShader(std::string vert_path, std::string frag_path);
-		void setScene();
-		bool rotateModel(float angle_x, float angle_y);
+		virtual void setScene() = 0;
+		virtual bool rotateModel(float angle_x, float angle_y) = 0;
 		GLSLProgram m_prog;
 		Geometry m_geo;
 		Material m_mat;
 		Scene m_scene;
 };
 
+class PhongPrefab : public Prefab {
+	public:
+		void setScene();
+		bool rotateModel(float angle_x, float angle_y);
+		glm::vec3 mat_ka;
+		glm::vec3 mat_kd;
+		glm::vec3 mat_ks;
+		float shininess;
+};

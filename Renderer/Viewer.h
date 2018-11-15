@@ -51,6 +51,7 @@ public:
 	}
 
 	bool loadPrefab(std::string filename);
+	bool loadDefaultAvatar();
 private:
 	std::vector<Prefab*> m_prefabs;
 };
