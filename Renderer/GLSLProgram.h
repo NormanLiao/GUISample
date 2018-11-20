@@ -4,7 +4,7 @@
 #include <nanogui/opengl.h>
 #include <nanogui/glutil.h>
 #include <string>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 
 namespace GLSLShader {

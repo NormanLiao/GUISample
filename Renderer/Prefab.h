@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtx/transform2.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include "GLSLProgram.h"

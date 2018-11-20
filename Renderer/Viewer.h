@@ -5,9 +5,9 @@
 #include <nanogui/nanogui.h>
 #include <iostream>
 #include <string>
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtx/transform2.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
 #include "Prefab.h"
 #include "VBOMesh.h"
 #include "GLSLProgram.h"
@@ -26,11 +26,11 @@ public:
 
 	virtual bool mouseMotionEvent(const nanogui::Vector2i &p, const nanogui::Vector2i &rel, int button, int modifiers) override {
 		if (button == GLFW_MOUSE_BUTTON_2) {
-			float angle = rel.x() / 10.0f;
+			float angle = rel.x() / 100.0f;
 			for (unsigned int idx = 0; idx < m_prefabs.size(); idx++)
 			{
 				m_prefabs[idx]->m_prog.use();
-				m_prefabs[idx]->rotateModel(-rel.x() / 10.0f, -rel.y() / 100.0f);
+				m_prefabs[idx]->rotateModel(-rel.x() / 500.0f, -rel.y() / 5000.0f);
 			}
 			return true;
 		}

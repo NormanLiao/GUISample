@@ -4,7 +4,7 @@
 #include <nanogui/opengl.h>
 #include <nanogui/glutil.h>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <string>
 
 struct PackedVertex {
