@@ -90,22 +90,22 @@ bool RenderView::loadDefaultAvatar()
 
 	PhongPrefab* prefab_face = new PhongPrefab();
 	prefab_face->compileAndLinkShader(vert_shader, frag_shader);
-	prefab_face->loadObj("../resources/Portrait_Front_1/face.obj");
-	prefab_face->loadTexture("../resources/Portrait_Front_1/face.jpg");
+	prefab_face->loadObj("../resources/avatar/face.obj");
+	prefab_face->loadTexture("../resources/avatar/face.jpg");
 	prefab_face->setScene();
 	m_prefabs.push_back(prefab_face);
 
 	PhongPrefab* prefab_body = new PhongPrefab();
 	prefab_body->compileAndLinkShader(vert_shader, frag_shader);
-	prefab_body->loadObj("../resources/Portrait_Front_1/avatar/body/body_part.obj");
-	prefab_body->loadTexture("../resources/Portrait_Front_1/body.jpg");
+	prefab_body->loadObj("../resources/avatar/body_part.obj");
+	prefab_body->loadTexture("../resources/avatar/body.jpg");
 	prefab_body->setScene();
 	m_prefabs.push_back(prefab_body);
 
 	PhongPrefab* prefab_cloth = new PhongPrefab();
 	prefab_cloth->compileAndLinkShader(vert_shader, frag_shader);
-	prefab_cloth->loadObj("../resources/Portrait_Front_1/cloth/cloth.obj");
-	prefab_cloth->loadTexture("../resources/Portrait_Front_1/cloth/texture.png");
+	prefab_cloth->loadObj("../resources/avatar/cloth/cloth.obj");
+	prefab_cloth->loadTexture("../resources/avatar/cloth/texture.png");
 	prefab_cloth->setScene();
 	m_prefabs.push_back(prefab_cloth);
 
