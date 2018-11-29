@@ -52,6 +52,7 @@ public:
 
 	bool loadPrefab(std::string filename);
 	bool loadDefaultAvatar();
+	void deletePrefabs();
 private:
 	std::vector<Prefab*> m_prefabs;
 };
@@ -71,7 +72,9 @@ public:
 	
 private:
 	RenderView *m_render;
+	void setRenderWidget(nanogui::Window *window);
 	void setBasicWidget(nanogui::Window *window);
+	void setLightWidget(nanogui::Window *window);
 };
 
 

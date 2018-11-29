@@ -6,7 +6,8 @@ in vec2 vTexCoord;
 in vec3 vTangent;
 in vec3 vBinormal;
 uniform sampler2D tDiffuse;
-uniform vec3 cameraPosition;
+uniform vec4 params0;
+uniform vec4 params1;
 
 struct BRDFParameter{
     vec4 baseColor;
@@ -39,8 +40,8 @@ BRDFParameter extractParameter(sampler2D baseMap, vec2 uv, vec2 repeat, vec2 off
     vec4 baseTexel = texture2D(baseMap, uv * repeat + offset);
     param.baseColor = vec4(mon2lin(baseTexel.rgb), baseTexel.a);
 
-    vec4 param0 = vec4(0.0);
-    vec4 param1 = vec4(0.0);
+    vec4 param0 = params0;
+    vec4 param1 = params1;
 	float rim = 0.0;
     param.metallic = param0.b;
     param.specular = param0.r;
@@ -167,7 +168,7 @@ vec3 BRDF( vec3 L, vec3 V, vec3 N, vec3 X, vec3 Y, BRDFParameter param)
     float subsurfaceAmount = disneySubsurface(nDotV, nDotL, lDotH, param.linearRoughness);
     
     vec3 specularAmount = disneySpecular(param.Cspec0, nDotH, lDotH, nDotL, nDotV, dot(H, X), dot(H, Y), param.anisotropic, param.linearRoughness );
-    return ((param.baseColor.rgb / PI) * mix(diffuseAmount, subsurfaceAmount, param.subsurface) + sheenAmount ) * (1.0 - param.metallic) + specularAmount;
+    return ((param.baseColor.rgb / PI) * mix(diffuseAmount, subsurfaceAmount, param.subsurface) + sheenAmount ) * (1.0 - param.metallic);
 }
 
 void main() {
@@ -178,7 +179,7 @@ void main() {
 	BRDFParameter param = extractParameter(tDiffuse, vTexCoord, vec2(1, 1), vec2(0, 0));
     
 	vec3 light_term = vec3(0.0);
-    vec3 dirEye = normalize( cameraPosition - vPosition );
+    vec3 dirEye = normalize(vPosition );
 
     float nDotV = dot(normal, dirEye);
     nDotV = max(dot(normal, dirEye), 0.0);

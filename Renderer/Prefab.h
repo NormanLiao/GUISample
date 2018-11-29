@@ -22,6 +22,7 @@ struct Material {
 };
 
 struct Scene {
+	glm::vec3 camera_pos;
 	glm::mat4 model;
 	glm::mat4 view;
 	glm::mat4 projection;
@@ -51,4 +52,13 @@ class PhongPrefab : public Prefab {
 		glm::vec3 mat_kd;
 		glm::vec3 mat_ks;
 		float shininess;
+};
+
+class BRDFPrefab : public Prefab {
+public:
+	void setScene();
+	bool rotateModel(float angle_x, float angle_y);
+private:
+	void setBRDFMaterials();
+	
 };

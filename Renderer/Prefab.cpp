@@ -34,6 +34,7 @@ GLuint Prefab::loadTexture(std::string filepath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	m_mat.m_tex.release();
 	m_prog.setUniform("tDiffuse", 0);
+	glActiveTexture(0);
 	return m_mat.m_texID;
 }
 
@@ -70,8 +71,8 @@ void PhongPrefab::setScene()
 	m_prog.setUniform("Light.Intensity", glm::vec3(1.0f, 1.0f, 1.0f));
 	m_prog.setUniform("Material.Kd", 0.9f, 0.9f, 0.9f);
 	m_prog.setUniform("Material.Ks", 0.1f, 0.1f, 0.1f);
-	m_prog.setUniform("Material.Ka", 0.4f, 0.4f, 0.4f);
-	m_prog.setUniform("Material.Shininess", 10.0f);
+	m_prog.setUniform("Material.Ka", 0.2f, 0.2f, 0.2f);
+	m_prog.setUniform("Material.Shininess", 1.0f);
 
 	glm::mat4 mv = m_scene.view * m_scene.model;
 	m_prog.setUniform("ModelViewMatrix", mv);
@@ -87,5 +88,44 @@ bool PhongPrefab::rotateModel(float angle_x, float angle_y)
 	m_prog.setUniform("ModelViewMatrix", mv);
 	m_prog.setUniform("NormalMatrix", glm::mat3(glm::vec3(mv[0]), glm::vec3(mv[1]), glm::vec3(mv[2])));
 	m_prog.setUniform("MVP", m_scene.projection * mv);
-	return false;
+	return true;
+}
+
+void BRDFPrefab::setScene()
+{
+	m_scene.camera_pos = glm::vec3(0.0f, 150.0f, 250.0f);
+	m_scene.model = glm::mat4(1.0f);
+	m_scene.view = glm::lookAt(m_scene.camera_pos, glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	m_scene.projection = glm::perspective(45.0f, (float)4 / 3, 1.0f, 1000.0f);
+	glm::mat4 mv = m_scene.view * m_scene.model;
+
+	setBRDFMaterials();
+	m_prog.setUniform("ModelViewMatrix", mv);
+	m_prog.setUniform("ProjectionMatrix", m_scene.projection);	
+}
+
+bool BRDFPrefab::rotateModel(float angle_x, float angle_y)
+{
+	m_scene.model *= glm::rotate(angle_x, glm::vec3(0.0f, 1.0f, 0.0f));
+	m_scene.model *= glm::rotate(angle_y, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 mv = m_scene.view * m_scene.model;
+	setBRDFMaterials();
+	m_prog.setUniform("ModelViewMatrix", mv);
+	m_prog.setUniform("ProjectionMatrix", m_scene.projection);
+	return true;
+}
+
+void BRDFPrefab::setBRDFMaterials()
+{
+	float specular = 0.5f;
+	float smoothness = 0.9f;
+	float metallic = 0.0f;
+	float subsurface = 0.3f;
+	float specularTint = 0.0f;
+	float anisotropic = 0.0f;
+	float sheen = 0.5f;
+	float sheenTint = 0.5f;
+
+	m_prog.setUniform("params0", glm::vec4(specular, smoothness, metallic, subsurface)); // r: specular,  g: smoothness, b: metallic, a: subsurface
+	m_prog.setUniform("params1", glm::vec4(specularTint, anisotropic, sheen, sheenTint)); // r: specularTint, g: anisotropic, b: sheen, a: sheenTint
 }
